@@ -49,4 +49,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.connectrpc:connect-kotlin-okhttp:0.7.0")
+    implementation("com.connectrpc:connect-kotlin-google-java-ext:0.7.0")
+    implementation("com.google.protobuf:protobuf-java:4.28.2")
+
 }
