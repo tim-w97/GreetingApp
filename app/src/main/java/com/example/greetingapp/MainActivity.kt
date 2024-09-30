@@ -14,16 +14,13 @@ import com.connectrpc.protocols.NetworkProtocol
 import com.example.greetingapp.databinding.ActivityMainBinding
 import greet.v1.Greet.GreetRequest
 import greet.v1.GreetServiceClient
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val HOST: String = "http://localhost:8080/greet.v1.GreetService/Greet"
+        private const val HOST: String = "http://10.0.2.2:8080"
 
     }
 
@@ -46,11 +43,11 @@ class MainActivity : AppCompatActivity() {
 
         greetServiceClient = GreetServiceClient(
             ProtocolClient(
-                httpClient = ConnectOkHttpClient(OkHttpClient()),
+                httpClient = ConnectOkHttpClient(),
                 ProtocolClientConfig(
                     host = HOST,
                     serializationStrategy = GoogleJavaProtobufStrategy(),
-                    networkProtocol =  NetworkProtocol.CONNECT,
+                    networkProtocol = NetworkProtocol.CONNECT,
                 )
             )
         )
@@ -58,19 +55,13 @@ class MainActivity : AppCompatActivity() {
         binding?.apply {
             submitButtonView.setOnClickListener {
                 lifecycleScope.launch {
-                    resultTextView.text = withContext(Dispatchers.IO) {
-                        greetServiceClient?.greet(
-                            request = GreetRequest.newBuilder()
-                                .setName(yourNameView.text.toString())
-                                .build()
-                        )?.let { response ->
-                            response.success { result ->
-                                result.message.greeting
-                            }
-
-                            response.failure { failure ->
-                                failure.cause.message
-                            }
+                    greetServiceClient?.greet(
+                        request = GreetRequest.newBuilder()
+                            .setName(yourNameView.text.toString())
+                            .build()
+                    )?.let { response ->
+                        response.success { success ->
+                            resultTextView.text = success.message.greeting
                         }
                     }
                 }
